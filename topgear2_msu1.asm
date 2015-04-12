@@ -10,6 +10,9 @@ constant MSU_AUDIO_CONTROL($2007)
 
 // SPC communication ports
 constant SPC_COMM_0($2140)
+constant SPC_COMM_1($2141)
+constant SPC_COMM_2($2142)
+constant SPC_COMM_3($2143)
 
 // MSU_STATUS possible values
 constant MSU_STATUS_TRACK_MISSING($8)
@@ -59,10 +62,76 @@ seek($81DA3F)
 	nop
 
 seek($9FF1A3)
-	nop
-	nop
-	nop
+	jsr MSU_MenuMain
 
-seek($9FFF80)
-TestMSU:
+seek($81FF80)
+MSU_GameMain:
 	rts
+	
+MSU_FadeVolume:
+	
+	if (pc() > $81FFFF) {
+		error "Overflow detected"
+	}
+	
+seek($9FFF80)
+MSU_MenuMain:
+	php
+	rep #$20
+	pha
+	
+	sep #$20
+	CheckMSUPresence(OriginalCode)
+	
+	// Set track
+	lda $01D2
+	cmp #$FF
+	beq DoNothing
+	cmp #$00
+	beq DoNothing
+	
+	clc
+	adc.b #$03
+	sta.w MSU_AUDIO_TRACK_LO
+	stz.w MSU_AUDIO_TRACK_HI
+	
+CheckMSUAudioStatus:
+	lda.w MSU_STATUS
+	and.b #MSU_STATUS_AUDIO_BUSY
+	bne CheckMSUAudioStatus
+	
+	// Check if the track is missing
+	lda.w MSU_STATUS
+	and.b #MSU_STATUS_TRACK_MISSING
+	bne OriginalCode
+	
+	// Play the song and add repeat if needed
+	lda #$03
+	sta.w MSU_AUDIO_CONTROL
+	
+	// Set volume
+	lda.b #FULL_VOLUME
+	sta.w MSU_AUDIO_VOLUME
+	
+	rep #$20
+	pla
+	plp
+	rts
+	
+OriginalCode:
+	rep #$20
+	pla
+	sep #$20
+	sta.w SPC_COMM_2
+	plp
+	rts
+	
+DoNothing:
+	rep #$20
+	pla
+	plp
+	rts
+	
+	if (pc() > $9FFFFF) {
+		error "Overflow detected"
+	}

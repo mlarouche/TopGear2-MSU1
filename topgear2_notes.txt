@@ -4,11 +4,30 @@ LoROM
 ==============
 = Free Space =
 ==============
-0x0FF80 to 0x0FFFF 
-0xFFF80 to 0xFFFFF
+; Bank $81
+0x0FF80 to 0x0FFFF = 127 bytes
+
+; Bank $82
+0x17FF0 to 0x 17FFF = 127 bytes
+
+; $9C
+0xE7F80 to 0xE7FFF = 127 bytes
+
+; Bank $9F
+0xFFF80 to 0xFFFFF = 127 bytes
+
 ===============
 = Music Index =
 ===============
+0 = Bank #0 (See Sub-Index)
+1 = Auckland
+2 = Ayers Rock
+3 = Cantebury Plains
+
+Bank #0 Sub-Index
+1 = Title Screen (msu #4)
+2 = Ending Theme (msu #5)
+3 = Qualified ! (msu #6)
 
 ============
 = Research =
@@ -90,14 +109,30 @@ $9F/F0CE 09 00 7F    ORA #$7F00              A:009B X:81A4 Y:8008 P:envmxdIzc
 $9F/F0D1 A0 00 00    LDY #$0000              A:7F9B X:81A4 Y:8008 P:envmxdIzc
 $9F/F0D4 22 14 BF 9F JSL $9FBF14[$9F:BF14]   A:7F9B X:81A4 Y:0000 P:envmxdIZc
 
+; Pause/Resume research
+$81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFF7 X:0000 Y:0049 P:eNvMxdizC
+$81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFEF X:0000 Y:0049 P:eNvMxdizC
+$81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFD7 X:0000 Y:0049 P:eNvMxdizC
+$81/DA21 8D 98 05    STA $0598  [$82:0598]   A:FF00 X:0000 Y:0049 P:envMxdiZc
+
 ===========
 = Routine =
 ===========
-$81/DA3F 8D 42 21    STA $2142  [$82:2142]   A:05FF X:0000 Y:00D0 P:eNvMXdizC
-$81/DA42 A5 9A       LDA $9A    [$00:059A]   A:05FF X:0000 Y:00D0 P:eNvMXdizC
-$81/DA44 8D 43 21    STA $2143  [$82:2143]   A:0501 X:0000 Y:00D0 P:envMXdizC
-$81/DA47 AD 3F 21    LDA $213F  [$82:213F]   A:0501 X:0000 Y:00D0 P:envMXdizC
+$81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFF7 X:0000 Y:0049 P:eNvMxdizC
 
+; NMI routine for actual game
+$81/DA33 CD 41 21    CMP $2141  [$82:2141]   A:0577 X:0000 Y:0000 P:envMXdizC
+$81/DA36 D0 FB       BNE $FB    [$DA33]      A:0577 X:0000 Y:0000 P:envMXdiZC
+$81/DA38 A5 98       LDA $98    [$00:0598]   A:0577 X:0000 Y:0000 P:envMXdiZC
+$81/DA3A 8D 41 21    STA $2141  [$82:2141]   A:05FF X:0000 Y:0042 P:eNvMXdizC
+$81/DA3D A5 99       LDA $99    [$00:0599]   A:05FF X:0000 Y:0000 P:eNvMXdizC
+$81/DA3F 8D 42 21    STA $2142  [$82:2142]   A:05FF X:0000 Y:0042 P:eNvMXdizC
+$81/DA42 A5 9A       LDA $9A    [$00:059A]   A:05FF X:0000 Y:0000 P:eNvMXdizC
+$81/DA44 8D 43 21    STA $2143  [$82:2143]   A:05FF X:0000 Y:0042 P:eNvMXdizC
+$81/DA47 AD 3F 21    LDA $213F  [$82:213F]   A:05FF X:0000 Y:0000 P:eNvMXdizC
+$81/DA4A 4A          LSR A                   A:0503 X:0000 Y:0000 P:envMXdizC
+
+$81/DAC2 85 9A       STA $9A    [$00:059A]   A:05FF X:0000 Y:0000 P:eNvMXdizc
 
 $9F/8058 8D 00 42    STA $4200  [$9F:4200]   A:0881 X:0000 Y:0CAC P:eNvMxdIzC
 $9F/805B C2 20       REP #$20                A:0881 X:0000 Y:0CAC P:eNvMxdIzC
