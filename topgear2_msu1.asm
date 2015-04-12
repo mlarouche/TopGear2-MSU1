@@ -56,32 +56,93 @@ macro CheckMSUPresence(labelToJump) {
 	bne {labelToJump}
 }
 
+seek($81DA3A)
+	jsr MSU_FadeVolume
+	
 seek($81DA3F)
-	nop
-	nop
-	nop
+	jsr MSU_GameMain
 
 seek($9FF1A3)
 	jsr MSU_MenuMain
 
+seek($9F8136)
+	jsr MSU_StoreSong
+	
 seek($81FF80)
-MSU_GameMain:
-	rts
-	
-MSU_FadeVolume:
-	
-	if (pc() > $81FFFF) {
-		error "Overflow detected"
-	}
-	
-seek($9FFF80)
-MSU_MenuMain:
+scope MSU_GameMain: {
 	php
 	rep #$20
 	pha
 	
 	sep #$20
 	CheckMSUPresence(OriginalCode)
+	
+	// Set track
+	lda $059A
+	cmp #$FF
+	beq DoNothing
+	cmp #$00
+	beq DoNothing
+	
+CheckMSUAudioStatus:
+	lda.w MSU_STATUS
+	and.b #MSU_STATUS_AUDIO_BUSY
+	bne CheckMSUAudioStatus
+	
+	// Check if the track is missing
+	lda.w MSU_STATUS
+	and.b #MSU_STATUS_TRACK_MISSING
+	bne OriginalCode
+	
+	// Play the song and add repeat if needed
+	lda #$03
+	sta.w MSU_AUDIO_CONTROL
+	
+	// Set volume
+	lda.b #FULL_VOLUME
+	sta.w MSU_AUDIO_VOLUME
+	
+	rep #$20
+	pla
+	plp
+	rts
+	
+OriginalCode:
+	rep #$20
+	pla
+	sep #$20
+	sta.w SPC_COMM_2
+	plp
+	rts
+	
+DoNothing:
+	rep #$20
+	pla
+	plp
+	rts
+}
+
+MSU_FadeVolume:
+	sta.w SPC_COMM_1
+	sta.w MSU_AUDIO_VOLUME
+	rts
+	
+	if (pc() > $81FFFF) {
+		error "Overflow detected"
+	}
+	
+
+seek($9FFF80)
+scope MSU_MenuMain: {
+	php
+	rep #$20
+	pha
+	
+	sep #$20
+	CheckMSUPresence(OriginalCode)
+	
+	lda $01C1
+	bne DoNothing
 	
 	// Set track
 	lda $01D2
@@ -131,7 +192,19 @@ DoNothing:
 	pla
 	plp
 	rts
-	
+}
+
+scope MSU_StoreSong: {
+	sta $01C1
+	php
+	sep #$20
+	sta.w MSU_AUDIO_TRACK_LO
+	stz.w MSU_AUDIO_TRACK_HI
+	plp
+	rts
+}
+
 	if (pc() > $9FFFFF) {
 		error "Overflow detected"
 	}
+	
