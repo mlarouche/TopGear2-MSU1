@@ -24,22 +24,9 @@ constant MSU_STATUS_DATA_BUSY(%10000000)
 // Constants
 if {defined EMULATOR_VOLUME} {
 	constant FULL_VOLUME($60)
-	constant DUCKED_VOLUME($20)
-	constant FADE_DELTA(1)
 } else {
 	constant FULL_VOLUME($FF)
-	constant DUCKED_VOLUME($60)
-	constant FADE_DELTA(2)
 }
-
-// Variables
-variable fadeState($180)
-variable fadeVolume($181)
-
-// FADE_STATE possibles values
-constant FADE_STATE_IDLE($00)
-constant FADE_STATE_FADEOUT($01)
-constant FADE_STATE_FADEIN($02)
 
 // **********
 // * Macros *
@@ -76,6 +63,10 @@ scope MSU_GameMain: {
 	
 	sep #$20
 	CheckMSUPresence(OriginalCode)
+	
+	// Check if the music needs to be played
+	lda $0599
+	beq OriginalCode
 	
 	// Set track
 	lda $059A
@@ -127,9 +118,9 @@ MSU_FadeVolume:
 	sta.w MSU_AUDIO_VOLUME
 	rts
 	
-	if (pc() > $81FFFF) {
-		error "Overflow detected"
-	}
+if (pc() > $81FFFF) {
+	error "Overflow detected"
+}
 	
 
 seek($9FFF80)
@@ -204,7 +195,7 @@ scope MSU_StoreSong: {
 	rts
 }
 
-	if (pc() > $9FFFFF) {
-		error "Overflow detected"
-	}
+if (pc() > $9FFFFF) {
+	error "Overflow detected"
+}
 	
