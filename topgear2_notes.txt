@@ -115,6 +115,9 @@ $81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFEF X:0000 Y:0049 P:eNvMxdizC
 $81/DA0D 8D 98 05    STA $0598  [$82:0598]   A:FFD7 X:0000 Y:0049 P:eNvMxdizC
 $81/DA21 8D 98 05    STA $0598  [$82:0598]   A:FF00 X:0000 Y:0049 P:envMxdiZc
 
+; Check if the music needs to be played depending of the options selected
+$81/8084 AF 08 FE 7E LDA $7EFE08[$7E:FE08]   A:0508 X:00FF Y:0000 P:eNVMXdIzc
+
 ===========
 = Routine =
 ===========

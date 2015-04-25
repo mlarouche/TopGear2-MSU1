@@ -27,52 +27,26 @@ Launch the game and voilà, enjoy !
 ===============
 = Music       =
 ===============
-The music is an edited version of the PS1/Saturn music for looping and volume boosting.
-Find the music pack here: https://www.mediafire.com/?d249260e88oc9y2
+The music is from the Amiga CD32 version of the game.
+Find the music pack here: https://www.mediafire.com/?wipczb80tb2kben
 
 If you want to make your own music pack, here's the music index:
-01 = Intro Stage
-02 = Blast Hornet
-03 = Frost Buffalo
-04 = Gravity Beetle
-05 = Toxic Seahorse
-06 = Doppler Stage 1
-07 = Crush Crawfish
-08 = Neon Tiger
-09 = Boss Battle 1
-10 = Doppler Stage 4
-11 = Title Screen
-12 = Stage Select
-13 = Passsword
-14 = Tunnel Rhino
-15 = Boss Selected Jingle
-16 = Talking to Dr.Cain
-17 = Doppler Boss Battle
-18 = Doppler Stage Select
-19 = Victory Jingle
-20 = Intro cutscene
-21 = Ending Theme 1
-22 = Boss Intro 1
-24 = Doppler Stage 3
-26 = Volt Catfish
-27 = Vile Secret Stage
-28 = Sigma Battle 1
-29 = Sigma Battle 2
-30 = Cast Roll (Ending Theme 2)
-31 = Got a Weapon Jingle
-32 = Zero Theme
+01 = Auckland (First Race)
+02 = Ayers Rock (Second Race)
+03 = Cantebury Plains (Third Race)
+04 = Title Screen
+05 = Ending Theme / Results
+06 = Qualified jingle
 
 =============
 = Compiling =
 =============
-Source is availabe on GitHub: https://github.com/mlarouche/MegamanX3-MSU1
+Source is availabe on GitHub: https://github.com/mlarouche/TopGear2-MSU1
 
 To compile the hack you need
 
 * bass v14 (https://web.archive.org/web/20140710190910/http://byuu.org/files/bass_v14.tar.xz)
 * wav2msu (https://github.com/mlarouche/wav2msu)
-
-The rom needs to be named mmx3_msu1.sfc and be the version 1.1 of the game.
 
 To distribute the hack you need
 
