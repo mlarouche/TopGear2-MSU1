@@ -28,6 +28,9 @@ if {defined EMULATOR_VOLUME} {
 	constant FULL_VOLUME($FF)
 }
 
+// Variables
+variable MSU_Pending($0082)
+
 // **********
 // * Macros *
 // **********
@@ -64,6 +67,9 @@ scope MSU_GameMain: {
 	sep #$20
 	CheckMSUPresence(OriginalCode)
 	
+	lda.w MSU_Pending
+	bne IsMSUReady
+	
 	// Check if the music needs to be played
 	lda $0599
 	beq OriginalCode
@@ -75,10 +81,9 @@ scope MSU_GameMain: {
 	cmp #$00
 	beq DoNothing
 	
-CheckMSUAudioStatus:
-	lda.w MSU_STATUS
-	and.b #MSU_STATUS_AUDIO_BUSY
-	bne CheckMSUAudioStatus
+IsMSUReady:
+	bit MSU_STATUS
+	bvs Exit
 	
 	// Check if the track is missing
 	lda.w MSU_STATUS
@@ -93,6 +98,9 @@ CheckMSUAudioStatus:
 	lda.b #FULL_VOLUME
 	sta.w MSU_AUDIO_VOLUME
 	
+	stz MSU_Pending
+	
+Exit:
 	rep #$20
 	pla
 	plp
@@ -132,8 +140,14 @@ scope MSU_MenuMain: {
 	sep #$20
 	CheckMSUPresence(OriginalCode)
 	
+	// If music is greater than 1, do nothing
+	// to not interfere with MSU game code.
 	lda $01C1
 	bne DoNothing
+	
+	// Is MSU Ready ?
+	lda.w MSU_Pending
+	bne IsMSUReady
 	
 	// Set track
 	lda $01D2
@@ -147,10 +161,13 @@ scope MSU_MenuMain: {
 	sta.w MSU_AUDIO_TRACK_LO
 	stz.w MSU_AUDIO_TRACK_HI
 	
-CheckMSUAudioStatus:
-	lda.w MSU_STATUS
-	and.b #MSU_STATUS_AUDIO_BUSY
-	bne CheckMSUAudioStatus
+	lda #$01
+	sta.w MSU_Pending
+	bra Exit
+	
+IsMSUReady:
+	bit MSU_STATUS
+	bvs Exit
 	
 	// Check if the track is missing
 	lda.w MSU_STATUS
@@ -165,6 +182,9 @@ CheckMSUAudioStatus:
 	lda.b #FULL_VOLUME
 	sta.w MSU_AUDIO_VOLUME
 	
+	stz MSU_Pending
+	
+Exit:
 	rep #$20
 	pla
 	plp
@@ -191,6 +211,8 @@ scope MSU_StoreSong: {
 	sep #$20
 	sta.w MSU_AUDIO_TRACK_LO
 	stz.w MSU_AUDIO_TRACK_HI
+	lda #$01
+	sta $7e0082
 	plp
 	rts
 }

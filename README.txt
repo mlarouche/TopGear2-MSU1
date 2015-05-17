@@ -1,13 +1,9 @@
 Top Gear 2 MSU-1
-Version 1.0
+Version 1.1
 by DarkShock
 
 This hack adds CD quality audio to Top Gear 2 using the MSU-1 chip invented by byuu.
 The hack has been tested on SD2SNES and higan 094. The patched ROM needs to be named topgear2_msu1.sfc.
-
-Note they are two IPS patches:
-- topgear2_msu1_emulator.ips is the one to use for proper volume in emulators.
-- topgear2_msu1.ips is for the SD2SNES
 
 ===============
 = Using higan =
@@ -17,6 +13,11 @@ Note they are two IPS patches:
 3. Go to %USERPROFILE%\Emulation\Super Famicom\topgear2s_msu1.sfc in Windows Explorer.
 4. Copy manifest.bml and the .pcm file there
 5. Run the game
+
+===============
+= Using BSNES =
+===============
+Just patch the ROM and launch the game. The pcm file needs to be in the same folder.
 
 ====================
 = Using on SD2SNES =
